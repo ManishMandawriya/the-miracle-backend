@@ -9,19 +9,13 @@ export class Media {
     id: number;
 
     @Column({ nullable: false })
-    media_type: string;
-
-    @Column({ nullable: false })
     ref_id: number;
 
     @Column({ nullable: false })
-    file_name: string;
+    audio_file_path: string;
 
     @Column({ nullable: false })
-    extension: string;
-
-    @Column({ nullable: false })
-    file_path: string;
+    image_file_path: string;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
@@ -29,13 +23,7 @@ export class Media {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 
-
-    // @OneToMany(() => Song, song => song.id)
-    // @JoinColumn({ name: 'ref_id' }) 
-    // song: Song;
-
-    @ManyToOne(() =>Song)
+    @ManyToOne(() => Song)
     @JoinColumn({ name: 'ref_id', referencedColumnName: 'id' })
     song: Song;
-
 }

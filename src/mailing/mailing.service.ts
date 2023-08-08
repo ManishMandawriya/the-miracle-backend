@@ -19,7 +19,8 @@ export class MailingService {
         let res = {};
         try {
             const renderedTemplate = await ejs.renderFile(
-                "/var/www/html/NestJs_Projects/song-player/src/views/ejs/mail-template.ejs",
+                // "/var/www/html/NestJs_Projects/song-player/src/views/ejs/mail-template.ejs",
+                "/var/www/html/NestJs_Projects/the-miracle-backend/src/views/ejs/mail-template.ejs",
                 { message: data?.body }
             );
 

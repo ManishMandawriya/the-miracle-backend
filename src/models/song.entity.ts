@@ -36,22 +36,11 @@ export class Song {
     @ManyToOne(() => Playlist, playlist => playlist.songs)
     playlist: Playlist;
 
-    // @ManyToOne(() => Media, media => media.ref_id)
-    // @JoinColumn({ name: 'id' })
+    // @ManyToOne(() => Media)
+    // @JoinColumn({ name: 'id', referencedColumnName: 'ref_id' })
     // media: Media;
 
-
-    @ManyToOne(() => Media)
-    @JoinColumn({ name: 'id', referencedColumnName: 'ref_id' })
-    media: Media;
-
-    @ManyToOne(() => Media)
-    @JoinColumn({ name: 'id', referencedColumnName: 'ref_id' })
-    bannner: Media;
-
-    
-    // @OneToMany(() => Media, media => media.ref_id)
-    // media: Media[];
-
-
+    // @ManyToOne(() => Media)
+    // @JoinColumn({ name: 'id', referencedColumnName: 'ref_id' })
+    // bannner: Media;
 }

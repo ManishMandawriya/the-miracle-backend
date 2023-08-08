@@ -70,45 +70,39 @@ export class SongsService {
 
     async uploadSong(audioFile: any, imageFile: any, body: any, res: any) {
         try {
-          const audioPath = `http://localhost/NestJs_Projects/the-miracle-backend/public/uploads/audio/${audioFile.filename}`;
-          const imagePath = `http://localhost/NestJs_Projects/the-miracle-backend/public/uploads/images/${imageFile.filename}`;
-          const duration: any = await this.getAudioDuration(audioFile.path);
-    
-          const song = this.songRepository.create({
-            duration: duration,
-            song_title: body.song_title,
-            size: this.formatFileSize(audioFile.size),
-          });
-    
-          const savedSong = await this.songRepository.save(song);
-    
-          for (const file of [audioFile, imageFile]) {
-            const extension = path.extname(file.originalname).substring(1);
-    
-            const media = this.mediaRepository.create({
-              media_type: file.fieldname === 'audio' ? 'audio' : 'image',
-              ref_id: savedSong.id,
-              file_name: file.filename,
-              extension: extension,
-              file_path: file.fieldname === 'audio' ? audioPath : imagePath,
+            const audioPath = `http://localhost/NestJs_Projects/the-miracle-backend/public/uploads/audio/${audioFile.filename}`;
+            const imagePath = `http://localhost/NestJs_Projects/the-miracle-backend/public/uploads/images/${imageFile.filename}`;
+            const duration: any = await this.getAudioDuration(audioFile.path);
+
+            const song = this.songRepository.create({
+                duration: duration,
+                song_title: body.song_title,
+                size: this.formatFileSize(audioFile.size),
             });
-    
+
+            const savedSong = await this.songRepository.save(song);
+            
+            const media = this.mediaRepository.create({
+                ref_id: savedSong.id,
+                audio_file_path: audioPath,
+                image_file_path: imagePath,
+            });
+
             await this.mediaRepository.save(media);
-          }
-    
-          return res.status(201).json({
-            status: true,
-            message: 'Song uploaded successfully',
-            data: [],
-          });
+
+            return res.status(201).json({
+                status: true,
+                message: 'Song uploaded successfully',
+                data: [],
+            });
         } catch (error) {
-          return res.status(500).json({
-            status: false,
-            message: 'Internal server error.',
-            error: error?.message,
-          });
+            return res.status(500).json({
+                status: false,
+                message: 'Internal server error.',
+                error: error?.message,
+            });
         }
-      }
+    }
 
 
 

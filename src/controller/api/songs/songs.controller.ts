@@ -16,13 +16,13 @@ export class SongsController {
     }
 
     @UseGuards(AuthGuard)
-    @Get("/listen/:id")
-    async listen(@Req() req: any, @Param("id") id: any, @Res() res: Response) {
-        await this.songService.listenSong(id, req, res)
+    @Post("/listen")
+    async listen(@Req() req: any, @Res() res: Response) {
+        await this.songService.listenSong( req, res)
     }
 
     @UseGuards(AuthGuard)
-    @Get("/history")
+    @Get("/recent")
     async history(@Req() req: any, @Res() res: Response) {
         await this.songService.getHistory(req, res)
     }

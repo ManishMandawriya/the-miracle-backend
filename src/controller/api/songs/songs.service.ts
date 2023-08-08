@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request, Response } from 'express';
+import { Media } from 'src/models/media.entity';
 import { RecentPlayed } from 'src/models/recent.entity';
 import { Song } from 'src/models/song.entity';
+import { User } from 'src/models/user.entity';
 import { json } from 'stream/consumers';
 import { Repository } from 'typeorm';
 
@@ -10,7 +12,9 @@ import { Repository } from 'typeorm';
 export class SongsService {
     constructor(
         @InjectRepository(Song) private songRepository: Repository<Song>,
-        @InjectRepository(RecentPlayed) private recentPlayedRepository: Repository<RecentPlayed>
+        @InjectRepository(Media) private mediaRepository: Repository<Media>,
+        @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(RecentPlayed) private recentPlayedRepository: Repository<RecentPlayed>,
     ) { }
 
     async getHomePageData(res: Response) {
@@ -20,34 +24,64 @@ export class SongsService {
                 order: {
                     listen_by: 'DESC'
                 },
-                take: 15
+                take: 15,
             })
 
-            const image_details = {
-                file_name: "image.jpg",
-                file_path: "/images/image.jpg"
-            };
+            const mediaData = await this.mediaRepository.find({});
 
-            const audio_details = {
-                file_name: "song.mp3",
-                file_path: "/audio/song.mp3"
-            };
+            const mediaMap = new Map();
+            mediaData.forEach(media => {
+                mediaMap.set(media.ref_id, media);
+            });
+
+            const songsWithMedia = top15Songs.map(song => ({
+                ...song,
+                media: mediaMap.get(song.id)
+            }));
+
+
+
             const data = [
                 {
-                    data: top15Songs,
+                    data: songsWithMedia,
                     section_type: 1,
                     title: "Home Banner"
                 },
-                // {
-                //     data: top15Songs,
-                //     section_type: 2,
-                //     title: "Recently Played"
-                // },
-                // {
-                //     data: top15Songs,
-                //     section_type: 3,
-                //     title: "Weekly Top 15"
-                // }
+                {
+                    data: songsWithMedia,
+                    section_type: 2,
+                    title: "Recently Played"
+                },
+                {
+                    data: songsWithMedia,
+                    section_type: 3,
+                    title: "Weekly Top 15"
+                },
+                {
+                    data: songsWithMedia,
+                    section_type: 4,
+                    title: "Weekly Top 15"
+                },
+                {
+                    data: songsWithMedia,
+                    section_type: 5,
+                    title: "Weekly Top 15"
+                },
+                {
+                    data: songsWithMedia,
+                    section_type: 6,
+                    title: "Weekly Top 15"
+                },
+                {
+                    data: songsWithMedia,
+                    section_type: 7,
+                    title: "Weekly Top 15"
+                },
+                {
+                    data: songsWithMedia,
+                    section_type: 8,
+                    title: "Weekly Top 15"
+                }
             ]
             return res.status(200).json({
                 status: true,
@@ -72,10 +106,11 @@ export class SongsService {
         }
     }
 
-    async listenSong(id: any, req: any, res: Response) {
+    async listenSong(req: any, res: Response) {
+
         try {
-            const song = await this.songRepository.findOne({ where: { id } });
-            const isRecent = await this.recentPlayedRepository.findOne({ where: { song_id: id, user_id: req.user.id } })
+            const song = await this.songRepository.findOne({ where: { id: req?.body?.id } });
+            const isRecent = await this.recentPlayedRepository.findOne({ where: { song_id: req?.body?.id, user_id: req.user.id } })
             if (!song) {
                 return res.status(400).json({
                     status: false,
@@ -86,10 +121,11 @@ export class SongsService {
                 isRecent.updatedAt = new Date()
                 await this.recentPlayedRepository.save(isRecent)
             } else {
-                await this.recentPlayedRepository.save({ song_id: id, user_id: req.user.id })
+                await this.recentPlayedRepository.save({ song_id: req?.body?.id, user_id: req.user.id })
             }
             song.listen_by += 1;
             await this.songRepository.save(song);
+            await this.userRepository.update({ id: req.user.id }, { last_played_song: req?.body })
 
             return res.status(200).json({
                 status: true,

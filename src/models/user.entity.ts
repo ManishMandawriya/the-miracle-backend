@@ -26,6 +26,9 @@ export class User {
     @Column({ nullable: true })
     remember_token: string
 
+    @Column({ type: 'json', nullable: true })
+    last_played_song: Record<string, any>  
+
     @Column({ default: true })
     status: boolean;
 
