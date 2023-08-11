@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { SongsService } from './songs.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AuthGuard } from 'src/middleware/auth.guard';
 
 @Controller('songs')
@@ -9,16 +9,16 @@ export class SongsController {
         private readonly songService: SongsService
     ) { }
 
-    @UseGuards(AuthGuard)
+    // @UseGuards(AuthGuard)
     @Get("/home-page-data")
-    async getHomePageData(@Res() res: Response) {
-        await this.songService.getHomePageData(res)
+    async getHomePageData(@Req() req: any, @Res() res: Response) {
+        await this.songService.getHomePageData(req, res)
     }
 
     @UseGuards(AuthGuard)
     @Post("/listen")
     async listen(@Req() req: any, @Res() res: Response) {
-        await this.songService.listenSong( req, res)
+        await this.songService.listenSong(req, res)
     }
 
     @UseGuards(AuthGuard)

@@ -20,6 +20,7 @@ import { UserService } from './controller/admin/user/user.service';
 import { UserModule } from './controller/admin/user/user.module';
 import { SongsModule as AdminSongsModule } from './controller/admin/songs/songs.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { JWT_SECRET_KEY } from './config/config.config';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { MulterModule } from '@nestjs/platform-express';
     TypeOrmModule.forFeature([User, Song, Session, Playlist, Admin, RecentPlayed, Media]),
     UsersModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET_KEY,
+      // secret: process.env.JWT_SECRET_KEY,
+      secret: JWT_SECRET_KEY,
       global: true,
       signOptions: {
         expiresIn: '7d',

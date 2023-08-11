@@ -17,8 +17,10 @@ export class SongsService {
         @InjectRepository(RecentPlayed) private recentPlayedRepository: Repository<RecentPlayed>,
     ) { }
 
-    async getHomePageData(res: Response) {
+    async getHomePageData(req: Request, res: Response) {
         try {
+
+
             const top15Songs = await this.songRepository.find({
                 where: { is_deleted: false },
                 order: {
@@ -39,18 +41,16 @@ export class SongsService {
                 media: mediaMap.get(song.id)
             }));
 
-
-
             const data = [
                 {
                     data: songsWithMedia,
                     section_type: 1,
-                    title: "Home Banner"
+                    title: "Weekly Top 15"
                 },
                 {
                     data: songsWithMedia,
                     section_type: 2,
-                    title: "Recently Played"
+                    title: "Weekly Top 15"
                 },
                 {
                     data: songsWithMedia,
@@ -70,16 +70,6 @@ export class SongsService {
                 {
                     data: songsWithMedia,
                     section_type: 6,
-                    title: "Weekly Top 15"
-                },
-                {
-                    data: songsWithMedia,
-                    section_type: 7,
-                    title: "Weekly Top 15"
-                },
-                {
-                    data: songsWithMedia,
-                    section_type: 8,
                     title: "Weekly Top 15"
                 }
             ]

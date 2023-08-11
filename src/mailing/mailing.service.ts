@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as ejs from 'ejs'
 import * as nodemailer from 'nodemailer';
+import { MAIL_FROM_ADDRESS, MAIL_PASSWORD, MAIL_USERNAME } from 'src/config/config.config';
 
 @Injectable()
 export class MailingService {
@@ -10,8 +11,10 @@ export class MailingService {
         port: 446,
         secure: true,
         auth: {
-            user: process.env.MAIL_USERNAME,
-            pass: process.env.MAIL_PASSWORD
+            // user: process.env.MAIL_USERNAME,
+            // pass: process.env.MAIL_PASSWORD
+            user: MAIL_USERNAME,
+            pass: MAIL_PASSWORD
         }
     })
 
@@ -25,7 +28,8 @@ export class MailingService {
             );
 
             const mailOptions = {
-                from: process.env.MAIL_FROM_ADDRESS,
+                // from: process.env.MAIL_FROM_ADDRESS,
+                from: MAIL_FROM_ADDRESS,
                 to: data?.email,
                 subject: data?.subject,
                 html: renderedTemplate,

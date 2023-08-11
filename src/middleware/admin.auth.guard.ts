@@ -7,6 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
+import { JWT_SECRET_KEY } from 'src/config/config.config';
 import { Admin, Session } from 'src/models/index.entity';
 import { Repository } from 'typeorm';
 
@@ -26,7 +27,8 @@ export class AdminAuthGuard implements CanActivate {
         }
         try {
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: process.env.JWT_SECRET_KEY,
+                // secret: process.env.JWT_SECRET_KEY,
+                secret: JWT_SECRET_KEY,
             });
 
             const userExist = await this.AdminModel.findOne({ where: { id: payload.id } });
